@@ -1,16 +1,32 @@
 ---
 title: "EDAV on CitiBike"
-author: "Feng Fan (),Lehui Liu (ll3238), Shaofei Wang (), Xuehan Zhao ()"
+author: "Feng Fan (),Lehui Liu (ll3238), Shaofei Wang (), Xuehan Zhao (xz2790)"
 date: "2018/11/18"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(ggmap)
+library(leaflet)
+library(leaflet.extras)
 ```
 
 ## Introduction
-(@xuehan)
+The popularity of Citi Bike is definitely one reason that makes New York City (NYC) unique among other cities in United States. It is a bicycle sharing system opened in May 2013 in NYC with 332 stations. Until now, there are 750 stations and 12,000 bikes serving Manhattan, Queens and Brooklyn (also including New Jersey, but for analysis purpose of this project, we only investigate Citi Bike data in NYC). However, we usually see way more people using Citi Bike around Middle Town than Columbia University (CU). Is this because the limited number of stations or available bikes around CU or people around CU do not prefer to use sharing bicycles? We are interested in the spatial distribution of stations and number of users. We will use R to analyze Citi Bike data in one particular month in order to understand the transportation of sharing bike and other interesting questions: if weather and season have an impact on Citi Bike frequency; Is there any trip pattern per week. 
+  
+Team members and corresponding contributions: 
+
+* Feng Fan:
+
+* Lehui Liu:
+
+* Shaofei Wang:
+
+* Xuehan Zhao: 
+
 
 ## Description of data
 Our data is from [Motivate](https://www.motivateco.com/use-our-data/).     
@@ -36,11 +52,6 @@ The feature includes:
 ## Analysis of data quality
 ### Load Data
 ```{r}
-library(ggplot2)
-library(dplyr)
-library(ggmap)
-library(leaflet)
-library(leaflet.extras)
 df <- read.csv('./201806-citibike-tripdata.csv')
 ```
 ### Definition on outliers
