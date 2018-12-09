@@ -333,7 +333,16 @@ Provide a short nontechnical summary of the most revealing findings of your anal
 * weather & season
 
 ## Interactive component
-Our data interactive component is written with Shiny and published out [here](https://edav.shinyapps.io/edavfinal/)
+Our data interactive component is written with Shiny and published out at shinyapps.io. Here is the [Link](https://edav.shinyapps.io/edavfinal/)
+
+Our interactive part mainly focuses on the geo-based data analysis. In other words, given specific start (and end ) stations of citibikes, we aim to find some bike using patterns behind and try to understand and explain them in terms of users' perspectives. In addition, we also provide some business advice based on the interactive analysis results.
+
+Because there are a lot of stations in New York (785 in the datasets we use in the interactive part), the popularity of different stations may vary a lot from one to anther. For decision makers, it would be necessary to know the users demands and prefences to different bike stations and thus making more resonable station construction and bike allocation plans. For users, it might be useful to know the general aeverage riding time from stations A to station B. Also, given the start station, we hope to find the top 5~30 frequent end stations users tend to return the bikes to from the specific start station, which would also help the decision makers to do some research on the **different** types ouser habits. I'll offer you some basic informations about this shiny app and show you how to use the interactive app to to data analysis as follows.
+
+The dataset of the interactive part is from July 2018. We mark all start staions of the dataset on the map, which will exhibit different clusters based on the zoom scales. Users could see a specific station on the map by zooming in or clicking the cluster to yield smaller clusters and individual stations. The staion's name will show up when mouseovering a specific individual station. Users could click the station marker to see the bar plot named "Time slot in the data", which displays **average/total** bike usage within different time in a day.
+
+Moreover, by selecting or searching a specific "Start Stations" in the select box in the bottom of the web page, users could see the corresponding bar plot of top 10 "End Stations". It's also convient to change the range of top popular "End Stations" by dragging slider bar to see different 
+
 
 
 ## Conclusion
