@@ -27,10 +27,13 @@ readData <- function(fileName){
   return (df1)
 }
 
-stationTimeSlot <- function(df,start){
+stationTimeSlot <- function(df, start, startName){
   df1 <- df %>% subset(start_id == start)
   df_timeslot <- mutate(df1,hour = hour(as.POSIXct(starttime)))
-  timeslot <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(color='Black',fill='Orange')+ggtitle('Time slot in trip data') + xlab("Hour")
+  timeslot <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) + 
+                geom_bar(color='Black',fill='Orange') + 
+                ggtitle(sprintf("Usage Statistics of Different Time slot of \"%s\"", startName)) + xlab("Hour")
+  
   return(timeslot)
 }
 
@@ -51,7 +54,7 @@ nameTopEnd <- function(df,start,k){
   title <- df1$start_name
  
   #g <- g + ggtitle('Top Destination From' + ))
-  g <- g + ggtitle(sprintf("Top %d Destination From %s", k, start))
+  g <- g + ggtitle(sprintf("Top %d Destination From \"%s\"", k, start))
   g <- g + coord_flip()
   return(g)
 }
