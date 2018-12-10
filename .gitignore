@@ -1,6 +1,11 @@
 *.csv
 *.pyc
 *.RData
+<<<<<<< HEAD
 *.Rproj.user
 *.Rproj
 *.Rhistory
+=======
+
+.DS_Store
+>>>>>>> c601419f387ddb0d4c39a2c04e4a319129a8734d
