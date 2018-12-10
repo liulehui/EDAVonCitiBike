@@ -1,4 +1,5 @@
 *.csv
 *.pyc
 *.RData
-.Rproj.user
+
+.DS_Store

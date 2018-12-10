@@ -15,6 +15,7 @@ server <- function(input, output) {
   
   #df1 <- df[sample(nrow(df), 200),]
   df2 <- df %>% group_by(start_name,start_id,start_lat,start_long) %>% summarise(Freq=n())
+ 
   # create a reactive value that will store the click position
   data_of_click <- reactiveValues(clickedMarker=NULL)
   
@@ -39,23 +40,33 @@ server <- function(input, output) {
     paste("You have selected", input$endStation)
   })
   
-  # Make a barplot of top popular end stations based on flag
   output$plota=renderPlot({
+    #barplot(rnorm(10), col=rgb(0.1,0.4,0.9,0.3))
+    #start = as.numeric(data_of_click$clickedMarker$id)
+    start = data_of_click$clickedMarker$id
+    if(is.null(start))
+      # startName = "Central Park S & 6 Ave "
+      return(NULL)
+    else {
+      temp <- filter(df2, start_id==as.numeric(start))
+      startName = temp$start_name
+      #print(temp$start_name)
+    }
+    stationTimeSlot(df, start, startName)
+  })
+  
+  # Make a barplot of top popular end stations based on flag
+  output$plotb=renderPlot({
     #print()
     nameTopEnd(df,input$startStation,input$topNum)
     #barplot(rnorm(23), col=rgb(0.1,0.4,0.9,0.3))
   })
   
-  output$plotb=renderPlot({
+  output$plotc=renderPlot({
     plotTimeDuration(df, input$startStation, input$endStation)
     # barplot(rnorm(10), col=rgb(0.1,0.4,0.9,0.3))
   })
-  
-  output$plotc=renderPlot({
-    #barplot(rnorm(10), col=rgb(0.1,0.4,0.9,0.3))
-    start = as.numeric(data_of_click$clickedMarker$id)
-    stationTimeSlot(df, start)
-  })
+
 }
 
 ui <- fluidPage(theme = shinytheme("cerulean"),
