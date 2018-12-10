@@ -1,32 +1,16 @@
 ---
 title: "EDAV on CitiBike"
-author: "Feng Fan (),Lehui Liu (ll3238), Shaofei Wang (), Xuehan Zhao (xz2790)"
+author: "Feng Fan (),Lehui Liu (ll3238), Shaofei Wang (), Xuehan Zhao ()"
 date: "2018/11/18"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(ggplot2)
-library(dplyr)
-library(ggmap)
-library(leaflet)
-library(leaflet.extras)
 ```
 
 ## Introduction
-The popularity of Citi Bike is definitely one reason that makes New York City (NYC) unique among other cities in United States. It is a bicycle sharing system opened in May 2013 in NYC with 332 stations. Until now, there are 750 stations and 12,000 bikes serving Manhattan, Queens and Brooklyn (also including New Jersey, but for analysis purpose of this project, we only investigate Citi Bike data in NYC). However, we usually see way more people using Citi Bike around Middle Town than Columbia University (CU). Is this because the limited number of stations or available bikes around CU or people around CU do not prefer to use sharing bicycles? We are interested in the spatial distribution of stations and number of users. We will use R to analyze Citi Bike data in one particular month in order to understand the transportation of sharing bike and other interesting questions: if weather and season have an impact on Citi Bike frequency; Is there any trip pattern per week. 
-  
-Team members and corresponding contributions: 
-
-* Feng Fan:
-
-* Lehui Liu:
-
-* Shaofei Wang:
-
-* Xuehan Zhao: 
-
+(@xuehan)
 
 ## Description of data
 Our data is from [Motivate](https://www.motivateco.com/use-our-data/).     
@@ -52,6 +36,11 @@ The feature includes:
 ## Analysis of data quality
 ### Load Data
 ```{r}
+library(ggplot2)
+library(dplyr)
+library(ggmap)
+library(leaflet)
+library(leaflet.extras)
 df <- read.csv('./201806-citibike-tripdata.csv')
 ```
 ### Definition on outliers
@@ -344,17 +333,26 @@ Provide a short nontechnical summary of the most revealing findings of your anal
 * weather & season
 
 ## Interactive component
-Our data interactive component is written with Shiny and published out at shinyapps.io. Here is the [Link](https://edav.shinyapps.io/edavfinal/)
+Our data interactive component is written with Shiny and published out at `shinyapps.io`. Here is the [Link](https://edav.shinyapps.io/edavfinal/)
 
-Our interactive part mainly focuses on the geo-based data analysis. In other words, given specific start (and end ) stations of citibikes, we aim to find some bike using patterns behind and try to understand and explain them in terms of users' perspectives. In addition, we also provide some business advice based on the interactive analysis results.
+### Design Purpose
+Our interactive part mainly focuses on the geo-based data analysis. In other words, given specific start (and end ) stations of citibikes, we aim to find some bike using patterns behind and try to understand and explain them in terms of users' perspectives. In addition, we also provide some business advice based on the interactive analysis results, such as how to allocate the citybikes to different stations to satisfy people’s needs from different areas.
 
-Because there are a lot of stations in New York (785 in the datasets we use in the interactive part), the popularity of different stations may vary a lot from one to anther. For decision makers, it would be necessary to know the users demands and prefences to different bike stations and thus making more resonable station construction and bike allocation plans. For users, it might be useful to know the general aeverage riding time from stations A to station B. Also, given the start station, we hope to find the top 5~30 frequent end stations users tend to return the bikes to from the specific start station, which would also help the decision makers to do some research on the **different** types ouser habits. I'll offer you some basic informations about this shiny app and show you how to use the interactive app to to data analysis as follows.
+Because there are a lot of stations in New York (765 in the datasets we use in the interactive part), the popularity of different stations may vary a lot from one to anther. For decision makers, it would be necessary to know the users demands and prefences to different bike stations and thus making more resonable station construction and bike allocation plans. For users, it might be useful to know the general aeverage riding time from start stations A to end station B. Also, given the start station, we hope to find the top 5~30 frequent end stations users tend to return the bikes to from the given start station, which would also help the decision makers to do some research on the **different** types ouser habits. I'll offer you some basic informations about this shiny app and show you how to use the interactive app to to data analysis as follows.
 
-The dataset of the interactive part is from July 2018. We mark all start staions of the dataset on the map, which will exhibit different clusters based on the zoom scales. Users could see a specific station on the map by zooming in or clicking the cluster to yield smaller clusters and individual stations. The staion's name will show up when mouseovering a specific individual station. Users could click the station marker to see the bar plot named "Time slot in the data", which displays **average/total** bike usage within different time in a day.
+### Interactive Features and How to use
+The dataset of the interactive part is from July 2018. We mark all start staions of the dataset on the map, which will exhibit different clusters based on the zoom scales. Users could see a specific station on the map by zooming in or clicking the cluster to yield smaller clusters and individual stations. The staion's name will show up when mouseovering a specific individual station. 
 
-Moreover, by selecting or searching a specific "Start Stations" in the select box in the bottom of the web page, users could see the corresponding bar plot of top 10 "End Stations". It's also convient to change the range of top popular "End Stations" by dragging slider bar to see different 
+First of all, to see the usage statistics of different stations, you could simply click the station marker, then the bar plot will pop out in the upper right corner. The bar plot will change as you click different stations. So based on this interactive function, it would be convient for the business managers to see the statistics of different bike staions and the change over time in a day. Just play around the "Click" function to see different stations, you will find that people uaually use citibikes during 5pm to 7pm. For some areas, there is another "usage peak" during 7~9 am. Of course, the demands for citibikes vary a lot from one to another, It might be necessary to construct some new bike stations according to the demands of different areas and the demands of different time in a day.
 
+Moreover, by selecting or searching a specific "Start Stations" in the select box at the bottom of the web page, users could see the corresponding bar plot of top 10 "End Stations" from the selected "Start Stations". It's also convient to change the range of top popular "End Stations" by dragging slider bar "Top Popular Stations" at the bottom left. For users, it's quite straightforward to see the "Top 5~30 Destinations" based on their current locations, which may be useful for them to choose the end stations to return the bikes. As you can see, this bar plot displays the statistics of two usertypes, i.e "Customer" and "Subscriber". Why we want to see the statistics of the different user types? Our team suppose the number of "Subscriber" should be larger than the number of "Customer" at most stations because it's more convenient and less expensive to use citibikes as "Subscriber", which is the truth for most stations. However, we found an interesting **"counter-example" ("abnormal station")**, "Central Park S & 6 Ave". If you select "Central Park S & 6 Ave" as the "Start Station", it will be suprised to find that the number of "Customer" is much larger than those of "Subscriber"! Our team thinks it might be attributed to a lot of tourists around the Central Park and tourists may just tend to use citibikes once. This "abnormality" shows that it might be necessary to do more detailed data analysis based on different bike stations and make different bike aollcation plans and business strategies towards different types of people according to their demands.
 
+Last but not least, our interactive web page alsp provides users with a boxplot to see the time duration (time cost) distribution from a specified start stations to another specified end stations. Users could select the "Start Stations" and "End Stations" to see the time cost based on different genders (Unknown, Male, Female). For citibike users, they could have a roughly idea about how long it would take from their near stations to the destinations. For business managers, it might be useful to make assumptions about why people use citibikes from station A to station B based on the time cost of the trip. Again, we use "Central Park S & 6 Ave" as example. If we select it as "Start Stations" and "End Stations", we would see three "standard" boxplots of different genders, the distributions of the three boxplots are also pretty similar to each other. Our team still thinks it is beacause there are a lot of tourists and most people use citibikes start from "Central Park S & 6 Ave" may also return them to the start positions.
+
+### Summary & Future Plan
+Our interactive part mainly focuses on the geo-based data visulizayion analysis. Users could see some visulized results through some easy interactions with our shiny website, such as click, drag, select and search. 
+
+There are two functions we've tried so hard to add to the interactive shiny app but didn't make it in the end. They are "Localize Me" and "Search a Place and See the Nearby Stations". The first one is "Localize Me", it is a button which could help users quickly localize their positions on the map and see the nearby stations and the corresponding data visualized analysis. We actually achieved this function using JavaScript on our local shiny app, but failed to deloy it at `shinyapps.io`. The other is "Search a Place and See the Nearby Stations", it would help people quickly find the bike stations near the place they are interested at, which would speed up the interactive data analysis process quickly compared to search certain bike stations directly. (It's much easier to remember the specific place's name than the station's location).
 
 ## Conclusion
 Discuss limitations and future directions, lessons learned.
