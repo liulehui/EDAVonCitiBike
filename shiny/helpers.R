@@ -43,7 +43,8 @@ nameTopEnd <- function(df,start,k){
   endstations <- df1 %>% 
     group_by(end_name) %>% 
     summarize(Freq=n()) %>% arrange(desc(Freq))
-  stations <- top_n(endstations,k)$end_name #top 5 end stations
+  
+  stations <- top_n(endstations,k)$end_name #top k end stations
   #print(stations)
   df2 <- df1 %>%
     filter(end_name %in% stations)
