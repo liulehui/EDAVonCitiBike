@@ -1,5 +1,6 @@
 *.csv
 *.pyc
 *.RData
-.Rproj.user
+*.Rproj.user
 *.Rproj
+*.Rhistory
