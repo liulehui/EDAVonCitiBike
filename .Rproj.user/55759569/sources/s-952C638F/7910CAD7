@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1544382600172.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "7910CAD7",
+    "lastKnownWriteTime" : 1544401206,
+    "last_content_update" : 1544401206729,
+    "path" : "~/Documents/edav/EDAV on CitiBike.Rmd",
+    "project_path" : "EDAV on CitiBike.Rmd",
+    "properties" : {
+        "cursorPosition" : "225,0",
+        "docOutlineVisible" : "1",
+        "last_setup_crc32" : "952C638Ff37982a",
+        "scrollLine" : "222"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
