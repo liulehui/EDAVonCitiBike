@@ -1,7 +1,7 @@
 ---
 title: "EDAV on CitiBike"
-author: "Feng Fan (ff2421),Lehui Liu (ll3238), Shaofei Wang (sw3316), Xuehan Zhao (xz2790)"
-date: "2018/11/18"
+author: "Feng Fan ( ff2421 ),Lehui Liu ( ll3238 ), Shaofei Wang ( sw3316 ), Xuehan Zhao ( xz2790 )"
+date: "2018/12/10"
 output: html_document
 ---
 
@@ -337,13 +337,9 @@ We made a join of Citi Bike trip data and NYC Weather data of June 2018 to see i
 In the NYC Weather dataset, a severe weather is defined as either rainy, foggy or snowy. We compared the number of trips corresponding to severe and unsevere weathers, and we can see a difference here. Notice that the number of days with severe weather and days with unsevere weather are both 15, so this comparison can reflect the difference between these two levels.     
 ```{r}
 ggplot(df_weather, aes(x=Severe))+
-<<<<<<< HEAD
-  geom_bar(colour="white", fill="#fb6a4a")+
-  ggtitle("Number of trips per day under severe and unsevere weather condition")
-=======
   geom_bar(colour="white", fill="#fb6a4a", alpha = 0.8)+
   ggtitle("Number of trips per day for severe and unsevere weather condition") +theme_grey(16)
->>>>>>> 166f5a6810b2bd5347003bf44dd6119ff1c1f9bf
+
 ```
   
 We then visualized the average number of trips per day in different temperatures, windspeeds, and precipitation. These visualizations are limited by the precision of NYC Weather dataset – only average windspeed, temperature and precipitation each day is available, and since only 30 days of data is included, we fail to observe a significant pattern here. However, there are peaks for each metric - the number of trips peaks at tempeature around 72, windspeed around 3.8 m/s, and precipitation of 0.   
@@ -444,11 +440,8 @@ library(lubridate)
 df_timeslot <- mutate(df,hour = hour(as.POSIXct(starttime)))
 df_timeslot <- mutate(df_timeslot,wday = wday(as.POSIXct(starttime)))
 df_timeslot <- df_timeslot[,c("hour","wday","minute","start.station.name","usertype")]
-<<<<<<< HEAD
-timeslot <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a')+ggtitle('Rush hour in trip data group by usertype')
-=======
+
 timeslot <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a', alpha = 0.8)+ggtitle('Time slot in trip data group by usertype')
->>>>>>> 166f5a6810b2bd5347003bf44dd6119ff1c1f9bf
 timeslot + facet_wrap(~usertype) + xlab('Hours')+ylab('Frequency')+theme_grey(16)
 ```
 
@@ -466,11 +459,8 @@ Thus, we can think some specific pricing strategy for a specific time slot in th
 ## Executive summary (Presentation-style)
 Our team ran an explanatory data analysis and visualization on the Citi Bike dataset in the June of 2018. In terms of trip length, we visualized the distribution of time duration as follows:
 ```{r}
-<<<<<<< HEAD
-ggplot(data=df,mapping=aes(minute)) + geom_histogram(fill='#fb6a4a',color='black')+ggtitle('Distribution of time duration') +xlab('minutes over one trip') + ylab('Frequency of trips')+ theme_grey(16)+scale_y_continuous(breaks = seq(0,500000,100000),labels = c("0","100K","200K","300K","400K","500K"))
-=======
-ggplot(data=df,mapping=aes(minute)) + geom_histogram(fill='#fb6a4a',color='black', alpha = 0.8)+ggtitle('Distribution of time duration') +xlab('minutes over one trip') + ylab('Frequency of trips')+ theme_grey(16)
->>>>>>> 166f5a6810b2bd5347003bf44dd6119ff1c1f9bf
+
+ggplot(data=df,mapping=aes(minute)) + geom_histogram(fill='#fb6a4a',color='black',alpha=0.8)+ggtitle('Distribution of time duration') +xlab('minutes over one trip') + ylab('Frequency of trips')+ theme_grey(16)+scale_y_continuous(breaks = seq(0,500000,100000),labels = c("0","100K","200K","300K","400K","500K"))
 ```
   
 Some interesting discoveies are listed as follows. 
@@ -502,11 +492,8 @@ We compared the average number of trips per day in severe and unsevere weather c
 
 ```{r}
 ggplot(df_weather, aes(x=Severe))+
-<<<<<<< HEAD
-  geom_bar(colour="white", fill="#fb6a4a")+ggtitle("Number of trips per day for severe and unsevere weather condition") +theme_grey(16) + ylab('Frequency') + scale_y_continuous(breaks = seq(0,1000000,250000),labels = c("0","250K","500K","750K","1M"))
-=======
-  geom_bar(colour="white", fill="#fb6a4a", alpha = 0.8)+ggtitle("Number of trips per day for severe and unsevere weather condition") +theme_grey(16) + ylab('Frequency')
->>>>>>> 166f5a6810b2bd5347003bf44dd6119ff1c1f9bf
+  geom_bar(colour="white", fill="#fb6a4a",alpha=0.8)+ggtitle("Number of trips per day for severe and unsevere weather condition") +theme_grey(16) + ylab('Frequency') + scale_y_continuous(breaks = seq(0,1000000,250000),labels = c("0","250K","500K","750K","1M"))
+
 ```
 ```{r}
 dygraph(ts,main = 'Impact of season',ylab = "Frequency") %>% dySeries('..1',label = 'subscriber ') %>% dySeries('..2',label = 'customer') %>% dyLegend(show = "always", hideOnMouseOut = FALSE,width=400) %>%
@@ -515,27 +502,19 @@ dygraph(ts,main = 'Impact of season',ylab = "Frequency") %>% dySeries('..1',labe
   
 ### 4. Rush hour in trip duration  
 When we were analyzing the trip data in time of day, we found that customers and subscribes are most different in that customers only have one peak hour around 3-5 PM, but subscribers have two peaks at one day: one around 8-9 AM and the other around 5-6 PM.  Based on this observation, our hypothesis is that customers are mostly tourists or casual bike riders, and subscribers use Citi Bike to commute. This hypothesis follows the pattern we observed, and to verify it, we need more detailed dataset and users’ information.	
-<<<<<<< HEAD
+
 ```{r fig.width=14}
-timeslot1 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a')+ggtitle('Time slot in trip data group by usertype')
+timeslot1 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a',alpha=0.8)+ggtitle('Time slot in trip data group by usertype')
 timeslot1 + facet_wrap(~usertype) +xlab('Hours')+ylab('Frequency')+theme_grey(16)+ scale_y_continuous(breaks = seq(0,150000,50000),labels = c("0","50K","100K","150K"))
-=======
-```{r}
-timeslot1 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a', alpha = 0.8)+ggtitle('Time slot in trip data group by usertype')
-timeslot1 + facet_wrap(~usertype) +xlab('Hours')+ylab('Frequency')+theme_grey(16)
->>>>>>> 166f5a6810b2bd5347003bf44dd6119ff1c1f9bf
+
 ```
   
 We also notice in weekend, people tend to have only one rush hour, the pattern is very different from weekdays.  
 
 ```{r fig.width=15}
-<<<<<<< HEAD
-timeslot2 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour)))  +geom_bar(fill='#fb6a4a')+ggtitle('Time slot in trip data group by weekdays')
+timeslot2 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour)))  +geom_bar(fill='#fb6a4a',alpha=0.8)+ggtitle('Time slot in trip data group by weekdays')
 timeslot2 + facet_wrap(~as.factor(wday))+ scale_y_continuous(breaks = seq(0,30000,10000),labels = c("0","10K","20K","30K"))+xlab('Hours')+ylab('Frequency')+ theme_grey(16)
-=======
-timeslot2 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour)))  +geom_bar(fill='#fb6a4a', alpha = 0.8)+ggtitle('Time slot in trip data group by weekdays')
-timeslot2 + facet_wrap(~as.factor(wday)) +xlab('Hours')+ylab('Frequency')+ theme_grey(16)
->>>>>>> 166f5a6810b2bd5347003bf44dd6119ff1c1f9bf
+
 ```
 
 
@@ -549,7 +528,7 @@ Because there are a lot of stations in New York (765 in the datasets we use in t
 
 ### Interactive Features and How to use
 
-The dataset of the interactive part is from July 2018. We mark all start staions of the dataset on the map, which will exhibit different clusters based on the zoom scales. Users could see a specific station on the map by zooming in or clicking the cluster to yield smaller clusters and individual stations. The staion's name will show up when mouseovering a specific individual station. 
+The dataset of the interactive part is from June 2018. We mark all start staions of the dataset on the map, which will exhibit different clusters based on the zoom scales. Users could see a specific station on the map by zooming in or clicking the cluster to yield smaller clusters and individual stations. The staion's name will show up when mouseovering a specific individual station. 
 
 First of all, to see the usage statistics of different stations, you could simply click the station marker, then the bar plot will pop out in the upper right corner. The bar plot will change as you click different stations. So based on this interactive function, it would be convient for the business managers to see the statistics of different bike staions and the change over time in a day. Just play around the "Click" function to see different stations, you will find that people uaually use citibikes during 5pm to 7pm. For some areas, there is another "usage peak" during 7~9 am. Of course, the demands for citibikes vary a lot from one to another, It might be necessary to construct some new bike stations according to the demands of different areas and the demands of different time in a day.
 
@@ -563,13 +542,14 @@ Our interactive part mainly focuses on the geo-based data visulizayion analysis.
 There are two functions we've tried so hard to add to the interactive shiny app but didn't make it in the end. They are "Localize Me" and "Search a Place and See the Nearby Stations". The first one is "Localize Me", it is a button which could help users quickly localize their positions on the map and see the nearby stations and the corresponding data visualized analysis. We actually achieved this function using JavaScript on our local shiny app, but failed to deloy it at `shinyapps.io`. The other is "Search a Place and See the Nearby Stations", it would help people quickly find the bike stations near the place they are interested at, which would speed up the interactive data analysis process quickly compared to search certain bike stations directly. (It's much easier to remember the specific place's name than the station's location).
 
 ## Conclusion
-After doing the analysis of Citi Bike data, we are surprised that there are total 1.95 million ridings in June 2018.  It is glad to see more people choose this healthy mode of transport. We have found some results: 
-* The active users in June 2018 is between 24 and 37 years old.
-* More than three fifth of users are female. 
-* In June 2018, Popular stations are in Midtown in manhattan. 
-* Weather and season have a huge impact on number of trips per day. On serever weather (rainy or foggy), the number of trips per day decreases. 
-* Different user types have different peak hours: Customers only have one peak hour around 3-5 PM, whereas subscribers have two peaks (8-9AM and 5-6PM) per day. 
-* The rush hour patterns are very different between weekdays abd weekend.
+After doing the analysis of Citi Bike data, we are surprised that there are total 1.95 million ridings in June 2018.  It is glad to see more people choose this healthy mode of transport. We have found some results:
+  
+* The active users in June 2018 is between 24 and 37 years old.  
+* More than three fifth of users are female.   
+* In June 2018, Popular stations are in Midtown in manhattan.   
+* Weather and season have a huge impact on number of trips per day. On serever weather (rainy or foggy), the number of trips per day decreases.   
+* Different user types have different peak hours: Customers only have one peak hour around 3-5 PM, whereas subscribers have two peaks (8-9AM and 5-6PM) per day.   
+* The rush hour patterns are very different between weekdays abd weekend.    
 
 We were able to find patterns of typical user groups, typical trips and spatial information from the Citi Bike dataset. These analyses are most useful if the Citi Bike group would like to set a more personalized version of pricing or advertising strategy for Citi Bike than the current customer/subscriber split.   
   
