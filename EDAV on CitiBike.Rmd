@@ -16,7 +16,7 @@ The existence of Citi Bike is definitely one reason that makes New York City (NY
   
 However, we usually see way more people using Citi Bike around Midtown than Columbia University (CU). Is this because the limited number of stations or available bikes around CU or people around CU do not prefer to use sharing bicycles? We are interested in the spatial distribution of stations and number of users as well as the bike usage patterns in different areas. We mainly use R to visualize and analyze Citi Bike data in one particular month in order to understand the transportation of sharing bikes and some interesting questions like: 
 
-* Whether weather and season have impacts on Citi Bike Usage frequency 
+* Whether weather and season have impact on Citi Bike Usage frequency 
 
 * Whether there is any trip pattern per week. 
 
@@ -34,6 +34,7 @@ Team members and corresponding contributions:
 
 * Xuehan Zhao: Visualizations related with usertype and heatmap; Summary
 
+Whole R markdown and html and corresponding code store in this [repo](https://github.com/liulehui/EDAVonCitiBike).
 
 ## Description of data
 Our data is from [Motivate](https://www.motivateco.com/use-our-data/). Motivate is the most experienced bike share team.They launched CitiBike in 2013 in NYC and collect [System data](https://www.citibikenyc.com/system-data) as CSV files, which can be downloaded from the link above.   
@@ -69,10 +70,10 @@ library(memisc)
 
 df <- read.csv('./201806-citibike-tripdata.csv')
 ```
-### Definition on outliers
+### Definition of outliers
 #### Outliers related to time duration
 We choose dataset of `201806` (June, 2018) as mentioned above
-The unit of trip duration in the dataframe is second which we think is not quite suitable for analyzing. Thus, we transform the unit into minutes by dividing 60. **Since the data is bike.**
+The unit of trip duration in the dataframe is second which we think is not quite suitable for analyzing. Thus, we transform the unit into minutes by dividing 60.
 ```{r}
 df <- df %>% mutate(minute=tripduration/60)
 ```
@@ -83,11 +84,11 @@ overalltripduration <-  ggplot(data=df,mapping=aes(x=usertype,y=minute)) + geom_
 overalltripduration + theme_grey(16)
 ```
 
-From the above graph boxplot, we could see that the outlier such as time duration **below 0** and the outliers **unreasonably large** may cause trouble in our future analysis.
+From the above graph boxplot, we could see that the outlier such as time duration below 0 and the outliers unreasonably large may cause trouble in our future analysis.
 
 Therefore, we define that **minute < 0** and **minute > 120** as outliers (Based on our evaluation, the ratio of time duration over 120 is about **0.3%**, so we thinks it's ok to remove those data given that people usually do not use a bike over two hours.
 
-We then draw the distribution after removing outliers, you could see the distribution of the boxplot is relative reasonable right now.  
+We then draw the distribution after removing outliers. You could see the distribution of the boxplot is relative reasonable right now.  
 ```{r}
 df <- subset(df,minute<120 & minute>0) 
 overalltripduration2 <-  ggplot(data=df,mapping=aes(x=usertype,y=minute)) + geom_boxplot(fill='#fb6a4a')+ggtitle('Distribution of time duration') 
@@ -213,10 +214,10 @@ Time         | Top Three Birth Year                     | Rank of birth year 196
 We looked at the registration page of Citi Bike. Now they do not allow users to leave birth date as blank when register. So it is resaonable to assume that NA birth year of data have been changed to 1969 since Jan 2018, which is the reason that frequency of 1969 in June 2018 is extremely high. We do not think replacing NA with 1969 is a good strategy to deal with NA data because 1969 is not an empty birth year. There are quite amount of users who born in 1969 (around 10%), it is then making our analysis of birth year difficult. 
 
 ### Evaluation on the dataset
-Overall, data quality of our dataset is pretty good. The outlier we defined, which is time duration over 120 minutes and stations out of NYC, only accounts for 0.4% data in our dataset. From this point of view, we can drop out those rows. 
+Overall, data quality of our dataset is pretty good. The outlier we defined, which is time duration over 120 minutes and stations out of NYC, only accounts for **0.4%** data in our dataset. From this point of view, we can drop out those rows. 
 
 ## Main analysis (Exploratory Data Analysis)
-### 1. Analysis on Age distribution of our customers
+### 1. Analysis on age distribution of our customers
 ```{r fig.height = 15} 
 df_2month = full_join(summary_18_6, summary_17_6, by = "factor_year")
 df_3month = full_join(df_2month, summary_16_6, by = "factor_year")
@@ -269,7 +270,7 @@ pie + scale_fill_manual(values=c("#fbb4ae", "#b3cde3", "#ccebc5")) +
   blank_theme + theme(axis.text.x=element_blank()) +
   geom_text(aes(y = value/3 + c(0, cumsum(value)[-length(value)]), 
                 label = c("10%","66%", "24%")), size=5) + 
-  ggtitle("Ratio of users' gender of Citi Bike ") + theme_grey(16)
+  ggtitle("Ratio of users' gender of Citi Bike ")
 ```
 
 There are 66% male users, 24% female users and 10% unkown. Apprently, there is a big differnece betwee female users and male users. We have seen some news report that Citi Bike users sometimes complain about the weight of citibike. Maybe that is one of the reasons that female users are small. Thus, we can think of some strategies for female users to increase profits because there is indeed room for improvement. 
@@ -296,7 +297,7 @@ top10 = station.info %>% dplyr::arrange(desc(n.trips))
 
 
 icon <- makeIcon(
-  iconUrl = ".img/citi_bike_icon.png",
+  iconUrl = "citi_bike_icon.png",
   iconWidth = 20, iconHeight = 20,
   iconAnchorX = 22, iconAnchorY = 22,
   shadowWidth = 20, shadowHeight = 20,
@@ -313,7 +314,7 @@ leaflet(station.info) %>%setView(-74.00, 40.71, zoom = 12) %>%
 
 We can see that there are more users starting their trips in Manhattan. In Manhattan, Midtown is the most popular area. The station near Central Park is also a popular spot, probably because there are some tourists riding inside Central Park. Back to our first question in the introduction, we are wondering why we do not see a lot of people around campus riding with Citi Bike. The number of stations around campus is not limited, but the starting rides from those stops are small. One possible explanation we believe is that there are quite amount of students living in dorms or very close to campus. So they do not need bicycles to transport. 
 
-### 4. Analysis on weather and season
+### 4. Analysis on weather and season impact
 #### Join weather data to see if weather has an impact 
 Intuitively, It is reasonable to assume that weather and season has a huge impact on CitiBike frequency. 
 ```{r}
@@ -334,7 +335,7 @@ In the NYC Weather dataset, a severe weather is defined as either rainy, foggy o
 ```{r}
 ggplot(df_weather, aes(x=Severe))+
   geom_bar(colour="white", fill="#fb6a4a")+
-  ggtitle("Number of trips per day for severe and unsevere weather condition") +theme_grey(16)
+  ggtitle("Number of trips per day under severe and unsevere weather condition")
 ```
   
 We then visualized the average number of trips per day in different temperatures, windspeeds, and precipitation. These visualizations are limited by the precision of NYC Weather dataset – only average windspeed, temperature and precipitation each day is available, and since only 30 days of data is included, we fail to observe a significant pattern here. However, there are peaks for each metric - the number of trips peaks at tempeature around 72, windspeed around 3.8 m/s, and precipitation of 0.   
@@ -370,7 +371,7 @@ ggplot(data = df_weather,
        aes(x=factor(Severe), y=minute,fill= '#fb6a4a'))+
   xlab("Severity of weather")+ylab("Average trip duration")+ 
   stat_summary(fun.y="mean", geom="bar")+
-  ggtitle("Average trip duration for severe and unsevere weather condition") + theme_grey(16)+ theme(legend.position="none")
+  ggtitle("Average trip duration for severe and unsevere weather condition") + theme(legend.position="none")
 ```
   
 The next 3 graphs show the relationship between the average trip durations in different windspeed, temperature and precipitation. Due to the scarcity of weather data, we fail to observe a significant pattern in temperature and windspeed, but we can observe the average trip duration drops with precipitation.
@@ -429,17 +430,17 @@ dygraph(ts,main = 'Impact of season',ylab = "Frequency") %>% dySeries('..1',labe
 From the graph above, we can observe a huge drop during cold weather like Januray.
 We can infer that season factor indeed has a huge impact on frequency.  
 
-### 5. Analysis about customer flow
-```{r}
+### 5. Analysis on customer flow
+```{r fig.width=13}
 library(lubridate) 
 df_timeslot <- mutate(df,hour = hour(as.POSIXct(starttime)))
 df_timeslot <- mutate(df_timeslot,wday = wday(as.POSIXct(starttime)))
 df_timeslot <- df_timeslot[,c("hour","wday","minute","start.station.name","usertype")]
-timeslot <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a')+ggtitle('Time slot in trip data group by usertype')
+timeslot <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a')+ggtitle('Rush hour in trip data group by usertype')
 timeslot + facet_wrap(~usertype) + xlab('Hours')+ylab('Frequency')+theme_grey(16)
 ```
 
-From the above analysis, the overall time slot has two peaks: in 8-9 am and 5-6 pm, which is reasonable since they are the rush hour, which has a large number of passenger flow.    
+From the above analysis, the overall rush hour has two peaks: in 8-9 am and 5-6 pm, which is reasonable since they are the rush hour, which has a large number of passenger flow.    
 However, the time slot distribution differs a lot with aspect to different usertype and different weekdays.Take the above images as examples, the customer has a higher peak in the time slot which is around 4 pm while the subscribers has two peaks.  
 
 ```{r fig.width=15}
@@ -453,7 +454,7 @@ Thus, we can think some specific pricing strategy for a specific time slot in th
 ## Executive summary (Presentation-style)
 Our team ran an explanatory data analysis and visualization on the Citi Bike dataset in the June of 2018. In terms of trip length, we visualized the distribution of time duration as follows:
 ```{r}
-ggplot(data=df,mapping=aes(minute)) + geom_histogram(fill='#fb6a4a',color='black')+ggtitle('Distribution of time duration') +xlab('minutes over one trip') + ylab('Frequency of trips')+ theme_grey(16)
+ggplot(data=df,mapping=aes(minute)) + geom_histogram(fill='#fb6a4a',color='black')+ggtitle('Distribution of time duration') +xlab('minutes over one trip') + ylab('Frequency of trips')+ theme_grey(16)+scale_y_continuous(breaks = seq(0,500000,100000),labels = c("0","100K","200K","300K","400K","500K"))
 ```
   
 Some interesting discoveies are listed as follows. 
@@ -476,6 +477,7 @@ leaflet(station.info) %>%setView(-74.00, 40.71, zoom = 12) %>%
   leaflet::addLegend("bottomleft", pal = pal, value = ~n.trips, title = "Num of trips starting from this station") %>%
   addMarkers(lng = ~top10[1:10,]$long, lat = ~top10[1:10,]$lat,  icon = icon)
 ```
+
 ### 3. Weather and season impact on trip frequency  
   
 From our analysis, weather has an impact on trip frequency descrease, and season does a huge impact.
@@ -483,7 +485,7 @@ We compared the average number of trips per day in severe and unsevere weather c
 
 ```{r}
 ggplot(df_weather, aes(x=Severe))+
-  geom_bar(colour="white", fill="#fb6a4a")+ggtitle("Number of trips per day for severe and unsevere weather condition") +theme_grey(16) + ylab('Frequency')
+  geom_bar(colour="white", fill="#fb6a4a")+ggtitle("Number of trips per day for severe and unsevere weather condition") +theme_grey(16) + ylab('Frequency') + scale_y_continuous(breaks = seq(0,1000000,250000),labels = c("0","250K","500K","750K","1M"))
 ```
 ```{r}
 dygraph(ts,main = 'Impact of season',ylab = "Frequency") %>% dySeries('..1',label = 'subscriber ') %>% dySeries('..2',label = 'customer') %>% dyLegend(show = "always", hideOnMouseOut = FALSE,width=400) %>%
@@ -492,16 +494,16 @@ dygraph(ts,main = 'Impact of season',ylab = "Frequency") %>% dySeries('..1',labe
   
 ### 4. Rush hour in trip duration  
 When we were analyzing the trip data in time of day, we found that customers and subscribes are most different in that customers only have one peak hour around 3-5 PM, but subscribers have two peaks at one day: one around 8-9 AM and the other around 5-6 PM.  Based on this observation, our hypothesis is that customers are mostly tourists or casual bike riders, and subscribers use Citi Bike to commute. This hypothesis follows the pattern we observed, and to verify it, we need more detailed dataset and users’ information.	
-```{r}
+```{r fig.width=14}
 timeslot1 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a')+ggtitle('Time slot in trip data group by usertype')
-timeslot1 + facet_wrap(~usertype) +xlab('Hours')+ylab('Frequency')+theme_grey(16)
+timeslot1 + facet_wrap(~usertype) +xlab('Hours')+ylab('Frequency')+theme_grey(16)+ scale_y_continuous(breaks = seq(0,150000,50000),labels = c("0","50K","100K","150K"))
 ```
   
 We also notice in weekend, people tend to have only one rush hour, the pattern is very different from weekdays.  
 
 ```{r fig.width=15}
 timeslot2 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour)))  +geom_bar(fill='#fb6a4a')+ggtitle('Time slot in trip data group by weekdays')
-timeslot2 + facet_wrap(~as.factor(wday)) +xlab('Hours')+ylab('Frequency')+ theme_grey(16)
+timeslot2 + facet_wrap(~as.factor(wday))+ scale_y_continuous(breaks = seq(0,30000,10000),labels = c("0","10K","20K","30K"))+xlab('Hours')+ylab('Frequency')+ theme_grey(16)
 ```
 
 
