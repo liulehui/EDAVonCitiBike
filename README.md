@@ -14,7 +14,3 @@ In addition, we also left join weather data from [NCDC](https://www.ncdc.noaa.go
 
 Please refer to our main analysis report ( **EDAVonCityBike.Rmd** or **EDAVonCityBike.html**.) for more detailed information.
 
-
-
-
-s
