@@ -82,7 +82,7 @@ df <- df %>% mutate(minute=tripduration/60)
 ```
 Then, we use boxplot to discover the overall distribution of time duration in the entire dataset.   
 ```{r}
-overalltripduration <-  ggplot(data=df,mapping=aes(x=usertype,y=minute)) + geom_boxplot(fill='#fb6a4a')+ggtitle('Distribution of time duration')
+overalltripduration <-  ggplot(data=df,mapping=aes(x=usertype,y=minute)) + geom_boxplot(fill='#fb6a4a', alpha = 0.8)+ggtitle('Distribution of time duration')
 overalltripduration + theme_grey(16)
 ```
 
@@ -91,9 +91,9 @@ Here, we define that **minute < 0** and **minute > 120** as outliers. From our e
 We then sdraw the distribution after removal of outliers.  
 ```{r}
 df <- subset(df,minute<120 & minute>0) 
-overalltripduration2 <-  ggplot(data=df,mapping=aes(x=usertype,y=minute)) + geom_boxplot(fill='#fb6a4a')+ggtitle('Distribution of time duration') 
+overalltripduration2 <-  ggplot(data=df,mapping=aes(x=usertype,y=minute)) + geom_boxplot(fill='#fb6a4a', alpha = 0.8)+ggtitle('Distribution of time duration') 
 overalltripduration2 + theme_grey(16) 
-overalltripduration3 <- ggplot(data=df,mapping=aes(minute)) + geom_histogram(fill='#fb6a4a',color='black')+ggtitle('Distribution of time duration') 
+overalltripduration3 <- ggplot(data=df,mapping=aes(minute)) + geom_histogram(fill='#fb6a4a',color='black', alpha = 0.8)+ggtitle('Distribution of time duration') 
 overalltripduration3 + theme_grey(16) 
 ```
 
@@ -125,7 +125,9 @@ summary_18_6 = mutate(summary_18_6, time = rep("201806", nrow(summary_18_6)))
 
 ggplot(summary_18_6, aes(x = factor_year, y = Freq)) + geom_point(col = "#fb6a4a") +
   coord_flip() + xlab("user's birth year") + 
-  ggtitle("Frequency of Citi Bike users' birth year in 2018/6") + theme_grey(16)
+  ggtitle("Frequency of Citi Bike users' birth year in 2018/6") +
+  theme_grey(16) +
+  scale_y_continuous(breaks = seq(0,200000,50000), labels = c("0","50k","100k","150k","200k"))
 ```
 
 One interesting observation is that the mode of user's birth year is 1969 (49 years old now) in 2018 June. So it is worth to discuss what is going on in that group of users because the frequency is way more higher than any other birth year users. Thus, we looked at dataset from 2016/6, 2017/6, 2017/12, 2018/1 and 2018/5.
@@ -231,7 +233,8 @@ tf = rbind(t1,t2,t3)
 ggplot(tf, aes(x = factor_year, y = Freq, color = as.factor(time))) + geom_point() +
   coord_flip() + xlab("user's birth year") + 
   ggtitle("Frequency of Citi Bike users' birth year in different months")+
-  labs(fill="Time") + theme_grey(16)
+  labs(fill="Time") + theme_grey(16) +
+  scale_y_continuous(breaks = seq(0,200000,50000), labels = c("0","50k","100k","150k","200k"))
 ```
 
 This Cleveland Dot Plot shows the distribution of user's birth year in 2016/6, 2017/6 and 2018/6. They are all left-skewed, which is what we expect. It is glad to see number of users for all ages increases from 2016 to 2018. In 2018 June, the active users are aged between 24 and 37. 
@@ -325,7 +328,7 @@ df_weather <- inner_join(df,NYCweather,by="Date")
 df_weather$Severe <- as.factor(df_weather$Severe)
 
 ggplot(df_weather, aes(x=Date))+
-  geom_bar(position='dodge', colour="white", fill="#fb6a4a")+
+  geom_bar(position='dodge', colour="white", fill="#fb6a4a", alpha = 0.8)+
   ggtitle("Number of trips by day") + theme_grey(16)
 ```
   
@@ -334,7 +337,7 @@ We made a join of Citi Bike trip data and NYC Weather data of June 2018 to see i
 In the NYC Weather dataset, a severe weather is defined as either rainy, foggy or snowy. We compared the number of trips corresponding to severe and unsevere weathers, and we can see a difference here. Notice that the number of days with severe weather and days with unsevere weather are both 15, so this comparison can reflect the difference between these two levels.     
 ```{r}
 ggplot(df_weather, aes(x=Severe))+
-  geom_bar(colour="white", fill="#fb6a4a")+
+  geom_bar(colour="white", fill="#fb6a4a", alpha = 0.8)+
   ggtitle("Number of trips per day for severe and unsevere weather condition") +theme_grey(16)
 ```
   
@@ -343,7 +346,7 @@ We then visualized the average number of trips per day in different temperatures
 ```{r}
 df_by_temp <- df_weather %>% group_by(Temperature) %>% summarise(n_distinct(starttime))
 ggplot(data = df_by_temp, aes(x=as.numeric(Temperature), y=`n_distinct(starttime)`))+
-  stat_summary(geom="bar", fill="#fb6a4a")+
+  stat_summary(geom="bar", fill="#fb6a4a", alpha = 0.8)+
   xlab("Temperature")+
   ylab("Average trips per day")+
   ggtitle("Average daily trips in different temperatures") +theme_grey(16)
@@ -351,7 +354,7 @@ ggplot(data = df_by_temp, aes(x=as.numeric(Temperature), y=`n_distinct(starttime
 
 df_by_windspeed <- df_weather %>% group_by(Windspeed) %>% summarise(n_distinct(starttime))
 ggplot(data = df_by_windspeed, aes(x=as.numeric(Windspeed), y=`n_distinct(starttime)`))+
-  stat_summary(geom="bar", fill="#fb6a4a")+
+  stat_summary(geom="bar", fill="#fb6a4a", alpha = 0.8)+
   xlab("Windspeed")+
   ylab("Average trips per day")+
   ggtitle("Average daily trips in different windspeeds")+theme_grey(16)
@@ -359,7 +362,7 @@ ggplot(data = df_by_windspeed, aes(x=as.numeric(Windspeed), y=`n_distinct(startt
 
 df_by_precip <- df_weather %>% group_by(Precipitation) %>% summarise(n_distinct(starttime))
 ggplot(data = df_by_precip, aes(x=as.numeric(Precipitation), y=`n_distinct(starttime)`))+
-  stat_summary(geom="bar", fill="#fb6a4a")+
+  stat_summary(geom="bar", fill="#fb6a4a", alpha = 0.8)+
   xlab("Precipitation")+
   ylab("Average trips per day")+
   ggtitle("Average daily trips in different precipitations")+theme_grey(16)
@@ -368,7 +371,7 @@ ggplot(data = df_by_precip, aes(x=as.numeric(Precipitation), y=`n_distinct(start
 We also compare the average trip duration in severe and unsevere weather, and we can see the difference is minor compared to the difference in the number of trips.
 ```{r}
 ggplot(data = df_weather,
-       aes(x=factor(Severe), y=minute,fill= '#fb6a4a'))+
+       aes(x=factor(Severe), y=minute,fill= '#fb6a4a', alpha = 0.8))+
   xlab("Severity of weather")+ylab("Average trip duration")+ 
   stat_summary(fun.y="mean", geom="bar")+
   ggtitle("Average trip duration for severe and unsevere weather condition") + theme_grey(16)+ theme(legend.position="none")
@@ -378,21 +381,21 @@ The next 3 graphs show the relationship between the average trip durations in di
 
 ```{r}
 ggplot(data = df_weather,
-       aes(x = Windspeed, y = minute,color='#fb6a4a')) +
+       aes(x = Windspeed, y = minute,color='#fb6a4a', alpha = 0.8)) +
   scale_x_continuous("Windspeed") +
   scale_y_continuous("Average trip duration in minutes") +
   ggtitle("Trip duration vs. Windspeed") + 
   stat_summary(fun.y="mean", geom = "line", size=1)+theme_grey(16)+ theme(legend.position="none") 
 
 ggplot(data = df_weather,
-       aes(x = Temperature, y = minute,color='#fb6a4a')) +
+       aes(x = Temperature, y = minute,color='#fb6a4a', alpha = 0.8)) +
   scale_x_continuous("Temperature") +
   scale_y_continuous("Average trip duration in minutes") +
   ggtitle("Trip duration vs. Temperature") + 
   stat_summary(fun.y="mean", geom="line", size=1)+ theme_grey(16)+ theme(legend.position="none") 
 
 ggplot(data = df_weather,
-       aes(x = Precipitation, y = minute,color='#fb6a4a')) +
+       aes(x = Precipitation, y = minute,color='#fb6a4a', alpha = 0.8)) +
   scale_x_continuous("Precipitation") +
   scale_y_continuous("Average trip duration in minutes") +
   ggtitle("Trip duration vs. Precipitation") +
@@ -436,7 +439,7 @@ library(lubridate)
 df_timeslot <- mutate(df,hour = hour(as.POSIXct(starttime)))
 df_timeslot <- mutate(df_timeslot,wday = wday(as.POSIXct(starttime)))
 df_timeslot <- df_timeslot[,c("hour","wday","minute","start.station.name","usertype")]
-timeslot <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a')+ggtitle('Time slot in trip data group by usertype')
+timeslot <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a', alpha = 0.8)+ggtitle('Time slot in trip data group by usertype')
 timeslot + facet_wrap(~usertype) + xlab('Hours')+ylab('Frequency')+theme_grey(16)
 ```
 
@@ -444,7 +447,7 @@ From the above analysis, the overall time slot has two peaks: in 8-9 am and 5-6 
 However, the time slot distribution differs a lot with aspect to different usertype and different weekdays.Take the above images as examples, the customer has a higher peak in the time slot which is around 4 pm while the subscribers has two peaks.  
 
 ```{r fig.width=15}
-timeslot <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour)))  +geom_bar(fill='#fb6a4a')+ggtitle('Time slot in trip data group by weekdays')
+timeslot <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour)))  +geom_bar(fill='#fb6a4a', alpha = 0.8)+ggtitle('Time slot in trip data group by weekdays')
 timeslot + facet_wrap(~as.factor(wday)) +xlab('Hours')+ylab('Frequency')+ theme_grey(16)
 ```
 
@@ -454,7 +457,7 @@ Thus, we can think some specific pricing strategy for a specific time slot in th
 ## Executive summary (Presentation-style)
 Our team ran an explanatory data analysis and visualization on the Citi Bike dataset in the June of 2018. In terms of trip length, we visualized the distribution of time duration as follows:
 ```{r}
-ggplot(data=df,mapping=aes(minute)) + geom_histogram(fill='#fb6a4a',color='black')+ggtitle('Distribution of time duration') +xlab('minutes over one trip') + ylab('Frequency of trips')+ theme_grey(16)
+ggplot(data=df,mapping=aes(minute)) + geom_histogram(fill='#fb6a4a',color='black', alpha = 0.8)+ggtitle('Distribution of time duration') +xlab('minutes over one trip') + ylab('Frequency of trips')+ theme_grey(16)
 ```
   
 Some interesting discoveies are listed as follows. 
@@ -463,9 +466,10 @@ Some interesting discoveies are listed as follows.
 
 In visualizing the distribution of Citi Bike users’ birth year, we observed that the birth year reaches its peak at 1988. So the typical users may be in the age around 30 years old. However, an abnormality is also observed as illustrated in the following graph（the lower part of graph is omitted here）. There exists a sudden peak in the year 1969.We looked a little more deeply in the data and observed that after 2018, there is this abnormal peak, while there is no such peak in years before 2018. Therefore, we made a hypothesis: when imputing missing values after 2018, Citi Bike system set the value to 1969, possibly because it was the typical user value before. To verify this hypothesis, we could contact the Citi Bike time and asked about how they treat missing values in their user data.  
 ```{r fig.height=15}
-ggplot(summary_18_6, aes(x = factor_year, y = Freq)) + geom_point(col = "#fb6a4a") +
+ggplot(summary_18_6, aes(x = factor_year, y = Freq)) + geom_point(col = "#fb6a4a", alpha = 0.8) +
   coord_flip() + xlab("user's birth year") + 
-  ggtitle("Frequency of Citi Bike users' birth year in 2018/6") + theme_grey(16)
+  ggtitle("Frequency of Citi Bike users' birth year in 2018/6") + theme_grey(16) + 
+  scale_y_continuous(breaks = seq(0,200000,50000), labels = c("0","50k","100k","150k","200k"))
 ```
    
 ### 2. Spatial Distribution of bike stations
@@ -477,6 +481,7 @@ leaflet(station.info) %>%setView(-74.00, 40.71, zoom = 12) %>%
   leaflet::addLegend("bottomleft", pal = pal, value = ~n.trips, title = "Num of trips starting from this station") %>%
   addMarkers(lng = ~top10[1:10,]$long, lat = ~top10[1:10,]$lat,  icon = icon)
 ```
+
 ### 3. Weather and season impact on trip frequency  
   
 From our analysis, weather has an impact on trip frequency descrease, and season does a huge impact.
@@ -484,7 +489,7 @@ We compared the average number of trips per day in severe and unsevere weather c
 
 ```{r}
 ggplot(df_weather, aes(x=Severe))+
-  geom_bar(colour="white", fill="#fb6a4a")+ggtitle("Number of trips per day for severe and unsevere weather condition") +theme_grey(16) + ylab('Frequency')
+  geom_bar(colour="white", fill="#fb6a4a", alpha = 0.8)+ggtitle("Number of trips per day for severe and unsevere weather condition") +theme_grey(16) + ylab('Frequency')
 ```
 ```{r}
 dygraph(ts,main = 'Impact of season',ylab = "Frequency") %>% dySeries('..1',label = 'subscriber ') %>% dySeries('..2',label = 'customer') %>% dyLegend(show = "always", hideOnMouseOut = FALSE,width=400) %>%
@@ -494,14 +499,14 @@ dygraph(ts,main = 'Impact of season',ylab = "Frequency") %>% dySeries('..1',labe
 ### 4. Rush hour in trip duration  
 When we were analyzing the trip data in time of day, we found that customers and subscribes are most different in that customers only have one peak hour around 3-5 PM, but subscribers have two peaks at one day: one around 8-9 AM and the other around 5-6 PM.  Based on this observation, our hypothesis is that customers are mostly tourists or casual bike riders, and subscribers use Citi Bike to commute. This hypothesis follows the pattern we observed, and to verify it, we need more detailed dataset and users’ information.	
 ```{r}
-timeslot1 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a')+ggtitle('Time slot in trip data group by usertype')
+timeslot1 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour))) +geom_bar(fill='#fb6a4a', alpha = 0.8)+ggtitle('Time slot in trip data group by usertype')
 timeslot1 + facet_wrap(~usertype) +xlab('Hours')+ylab('Frequency')+theme_grey(16)
 ```
   
 We also notice in weekend, people tend to have only one rush hour, the pattern is very different from weekdays.  
 
 ```{r fig.width=15}
-timeslot2 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour)))  +geom_bar(fill='#fb6a4a')+ggtitle('Time slot in trip data group by weekdays')
+timeslot2 <- ggplot(data=df_timeslot,mapping=aes(as.factor(hour)))  +geom_bar(fill='#fb6a4a', alpha = 0.8)+ggtitle('Time slot in trip data group by weekdays')
 timeslot2 + facet_wrap(~as.factor(wday)) +xlab('Hours')+ylab('Frequency')+ theme_grey(16)
 ```
 
@@ -530,7 +535,13 @@ Our interactive part mainly focuses on the geo-based data visulizayion analysis.
 There are two functions we've tried so hard to add to the interactive shiny app but didn't make it in the end. They are "Localize Me" and "Search a Place and See the Nearby Stations". The first one is "Localize Me", it is a button which could help users quickly localize their positions on the map and see the nearby stations and the corresponding data visualized analysis. We actually achieved this function using JavaScript on our local shiny app, but failed to deloy it at `shinyapps.io`. The other is "Search a Place and See the Nearby Stations", it would help people quickly find the bike stations near the place they are interested at, which would speed up the interactive data analysis process quickly compared to search certain bike stations directly. (It's much easier to remember the specific place's name than the station's location).
 
 ## Conclusion
-After doing the analysis of Citi Bike data, we are surprised that there are total 1.95 million ridings in June 2018.  It is glad to see more people choose this healthy mode of transport. We have found some results: The active users in June 2018 is between 24 and 37 years old; More than three fifth of users are female; In June 2018, Popular stations are in Midtown in manhattan. (other results…) 
+After doing the analysis of Citi Bike data, we are surprised that there are total 1.95 million ridings in June 2018.  It is glad to see more people choose this healthy mode of transport. We have found some results: 
+* The active users in June 2018 is between 24 and 37 years old.
+* More than three fifth of users are female. 
+* In June 2018, Popular stations are in Midtown in manhattan. 
+* Weather and season have a huge impact on number of trips per day. On serever weather (rainy or foggy), the number of trips per day decreases. 
+* Different user types have different peak hours: Customers only have one peak hour around 3-5 PM, whereas subscribers have two peaks (8-9AM and 5-6PM) per day. 
+* The rush hour patterns are very different between weekdays abd weekend.
 
 We were able to find patterns of typical user groups, typical trips and spatial information from the Citi Bike dataset. These analyses are most useful if the Citi Bike group would like to set a more personalized version of pricing or advertising strategy for Citi Bike than the current customer/subscriber split.   
   
