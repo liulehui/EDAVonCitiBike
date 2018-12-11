@@ -10,22 +10,19 @@ knitr::opts_chunk$set(echo = TRUE,warning = FALSE,message = FALSE)
 
 ```
 
-## Introduction
-```{r}
-library(ggplot2)
-library(dplyr)
-library(ggmap)
-library(leaflet)
-library(leaflet.extras)
-library(memisc)
-```
 
 ## Introduction
-The existence of Citi Bike is definitely one reason that makes New York City (NYC) unique among other cities in United States. It is a bicycle sharing system opened in May 2013 in NYC with 332 stations. Until now, there are 750 stations and 12,000 bikes serving Manhattan, Queens and Brooklyn (also including New Jersey, but for analysis purpose of this project, we only investigate Citi Bike data in NYC).  
+The existence of Citi Bike is definitely one reason that makes New York City (NYC) unique among other cities in United States. It is a bicycle sharing system established in May 2013 in NYC with 332 stations. Until now, there are 750 stations and 12,000 bikes serving Manhattan, Queens and Brooklyn (also including New Jersey, but for analysis purpose of this project, we only investigate Citi Bike data in NYC).  
   
-However, we usually see way more people using Citi Bike around Midtown than Columbia University (CU). Is this because the limited number of stations or available bikes around CU or people around CU do not prefer to use sharing bicycles? We are interested in the spatial distribution of stations and number of users. We will use R to analyze Citi Bike data in one particular month in order to understand the transportation of sharing bike and other interesting questions: 
-* Whether weather and season have an impact on Citi Bike frequency 
+However, we usually see way more people using Citi Bike around Midtown than Columbia University (CU). Is this because the limited number of stations or available bikes around CU or people around CU do not prefer to use sharing bicycles? We are interested in the spatial distribution of stations and number of users as well as the bike usage patterns in different areas. We mainly use R to visualize and analyze Citi Bike data in one particular month in order to understand the transportation of sharing bikes and some interesting questions like: 
+
+* Whether weather and season have impacts on Citi Bike Usage frequency 
+
 * Whether there is any trip pattern per week. 
+
+* What are the top popular stations, can we find some interesting geo-based patterns about the bike usage analysis?
+
+* Can we find some common valubale bike usage patterns and the change over time?
   
 Team members and corresponding contributions: 
 
@@ -33,20 +30,19 @@ Team members and corresponding contributions:
 
 * Lehui Liu: Data Preprocessing; Visualizations related to rush hour
 
-* Shaofei Wang: Interactive Component
+* Shaofei Wang: Visualizations related to geo-location and Interactive Component
 
 * Xuehan Zhao: Visualizations related with usertype and heatmap; Summary
 
 
 ## Description of data
-Our data is from [Motivate](https://www.motivateco.com/use-our-data/). Motivate is the most experienced bike share team.They launched CitiBike in 2013 in NYC.            
-Besides, they collect [System data](https://www.citibikenyc.com/system-data) as CSV files, which can be downloaded from the link above.   
+Our data is from [Motivate](https://www.motivateco.com/use-our-data/). Motivate is the most experienced bike share team.They launched CitiBike in 2013 in NYC and collect [System data](https://www.citibikenyc.com/system-data) as CSV files, which can be downloaded from the link above.   
   
 In this final project, we analyze the data from **June, 2018** because we think it is a common time period when people prefer to ride bikes under relatively mild weather, which can be very representative. 
   
-We do realize that season and time will have an impact on people’s choice on riding bikes, so in our analysis, we will include other data file such as [weather information](https://www.ncdc.noaa.gov) from other sources in order to analyze the time and seasons. Besides, the website provides data from June 2013 so we can analyze the time series pattern as well. When it comes to time series, we downloaded data from the source from 2017 June to 2018 June, and sampled each dataset with randomly choosing 5% of the data. Then we concat them together. The code combine the dataset is written in python and is also included in the github repo named [sampledata.py](https://github.com/liulehui/EDAVonCitiBike/blob/master/samplefortimeseries.py).    
+We do realize that season and time will have impacts on people’s choice on riding bikes, so in our analysis, we also include other data files such as [weather information](https://www.ncdc.noaa.gov) from other sources in order to analyze the influences of time and seasons. Besides, the website provides data from June 2013 so we can analyze the time series pattern as well. When it comes to time series, we downloaded data from the source from 2017 June to 2018 June, and sampled each dataset by randomly choosing 5% of the data. Then we concat them together. The code combine the dataset is written in python, which is also included in the github repo named [sampledata.py](https://github.com/liulehui/EDAVonCitiBike/blob/master/samplefortimeseries.py).    
   
-The features in the dataframe includes:  
+The features of the original citibike dataframe includes:  
 
 * Trip Duration (seconds)
 * Start Time and Date
@@ -62,33 +58,36 @@ The features in the dataframe includes:
 
 
 ## Analysis of data quality
-### Load Data
+### Load Data 
 ```{r}
-
 library(ggplot2)
 library(dplyr)
 library(ggmap)
 library(leaflet)
-#library(leaflet.extras)
+library(leaflet.extras)
+library(memisc)
 
 df <- read.csv('./201806-citibike-tripdata.csv')
 ```
 ### Definition on outliers
 #### Outliers related to time duration
-We choose dataset of 201806 as mentioned in Part.2.
-The unit of trip duration in the dataframe is second which is not suitable for analyzing. Thus, we transform the unit into minutes by dividing 60. Since the data is bike. 
+We choose dataset of `201806` (June, 2018) as mentioned above
+The unit of trip duration in the dataframe is second which we think is not quite suitable for analyzing. Thus, we transform the unit into minutes by dividing 60. **Since the data is bike.**
 ```{r}
 df <- df %>% mutate(minute=tripduration/60)
 ```
+
 Then, we use boxplot to discover the overall distribution of time duration in the entire dataset.   
 ```{r}
 overalltripduration <-  ggplot(data=df,mapping=aes(x=usertype,y=minute)) + geom_boxplot(fill='#fb6a4a', alpha = 0.8)+ggtitle('Distribution of time duration')
 overalltripduration + theme_grey(16)
 ```
 
-From the above graph boxplot, we see that the outlier such as time duration **below 0** and the outliers **unreasonably large** may cause trouble in our analysis.   
-Here, we define that **minute < 0** and **minute > 120** as outliers. From our evaluation, since the ratio of time duration over 120 is about **0.3%**. We can confidently remove those data. Because normally one do not use a bike for that long.  
-We then sdraw the distribution after removal of outliers.  
+From the above graph boxplot, we could see that the outlier such as time duration **below 0** and the outliers **unreasonably large** may cause trouble in our future analysis.
+
+Therefore, we define that **minute < 0** and **minute > 120** as outliers (Based on our evaluation, the ratio of time duration over 120 is about **0.3%**, so we thinks it's ok to remove those data given that people usually do not use a bike over two hours.
+
+We then draw the distribution after removing outliers, you could see the distribution of the boxplot is relative reasonable right now.  
 ```{r}
 df <- subset(df,minute<120 & minute>0) 
 overalltripduration2 <-  ggplot(data=df,mapping=aes(x=usertype,y=minute)) + geom_boxplot(fill='#fb6a4a', alpha = 0.8)+ggtitle('Distribution of time duration') 
@@ -512,7 +511,7 @@ timeslot2 + facet_wrap(~as.factor(wday)) +xlab('Hours')+ylab('Frequency')+ theme
 
 
 ## Interactive component
-Our data interactive component is written with Shiny and published out at `shinyapps.io`. Here is the [Link](https://edav.shinyapps.io/edavfinal/)
+Our data interactive component is written with Shiny and published out at `shinyapps.io`. Here is our [Interactive App Link](https://edav.shinyapps.io/edavfinal/)
 
 ### Design Purpose
 Our interactive part mainly focuses on the geo-based data analysis. In other words, given specific start (and end) stations of citibikes, we aim to find some bike using patterns behind and try to understand and explain them in terms of users' perspectives. In addition, we also provide some business advice based on the interactive analysis results, such as how to allocate the citybikes to different stations to satisfy people’s needs from different areas.
